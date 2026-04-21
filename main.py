@@ -108,11 +108,14 @@ SYSTEM_PROMPT = (
 )
 
 
+MAX_TOOL_ROUNDS = 10
+
+
 def ask(messages: list, user_message: str) -> str:
     """Pridá otázku do histórie, spustí tool-use cyklus a vráti odpoveď."""
     messages.append({"role": "user", "content": user_message})
 
-    while True:
+    for _ in range(MAX_TOOL_ROUNDS):
         response = client.chat.completions.create(
             model=MODEL,
             messages=messages,
@@ -132,9 +135,11 @@ def ask(messages: list, user_message: str) -> str:
                 {
                     "role": "tool",
                     "tool_call_id": call.id,
-                    "content": json.dumps(result),
+                    "content": json.dumps(result, ensure_ascii=False),
                 }
             )
+
+    return "Prepáč, nepodarilo sa mi dospieť k odpovedi — skús sa opýtať inak."
 
 
 EXIT_WORDS = {"koniec", "exit", "quit", "q", "bye", "dovi", "dovidenia"}
