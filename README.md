@@ -1,6 +1,6 @@
 # Vibe Coding kurz - Domáca úloha 1 — LLM + Tool Use (ISS asistent)
 
-Python chatbot v termináli, ktorý cez **OpenAI API** (model `gpt-4o-mini`) odpovedá na otázky o Medzinárodnej vesmírnej stanici a astronautoch vo vesmíre. Aktuálne dáta (poloha ISS, astronauti) si ťahá cez **tool use** z verejných API.
+Python chatbot v termináli, ktorý cez **OpenAI API** (model `gpt-4o-mini`) odpovedá na aktuálne otázky o Medzinárodnej vesmírnej stanici a astronautoch vo vesmíre. Aktuálne dáta (poloha ISS, astronauti) si ťahá cez **tool use** z verejných API.
 
 ## Práca s LLM API
 
