@@ -1,49 +1,35 @@
-# Vibe Coding DÚ 1 — LLM + Tool Use (ISS asistent)
+# Vibe Coding kurz - Domáca úloha 1 — LLM + Tool Use (ISS asistent)
 
-Python skript, ktorý demonštruje **tool use** (function calling) s OpenAI API
-formou jednoduchého konverzačného chatbota v termináli.
+Python chatbot v termináli, ktorý cez **OpenAI API** (model `gpt-4o-mini`) odpovedá na otázky o Medzinárodnej vesmírnej stanici a astronautoch vo vesmíre. Aktuálne dáta (poloha ISS, astronauti) si ťahá cez **tool use** z verejných API.
 
-Téma: **Asistent, ktorý pozná aktuálnu polohu a posádku Medzinárodnej vesmírnej
-stanice (ISS).** Po spustení sa skript pozdraví, čaká na otázku a odpovedá
-v prirodzenej reči — jedným krátkym odstavcom, bez zoznamov a JSON-u. Konverzácia
-pokračuje v slučke a model si pamätá predošlé otázky, takže zvláda aj nadväzujúce
-otázky ("A kto je tam z Ruska?").
+## Práca s LLM API
 
-## Prečo je v úlohe LLM potrebné?
+Bez LLM by to bolo len obyčajné HTTP volanie. LLM pridáva **porozumenie reči**,
+**samostatné rozhodnutie** ktorý nástroj kedy zavolať, **formuláciu odpovede**
+a **pamäť konverzácie** (nadväzujúce otázky fungujú).
 
-Bez LLM by šlo len o obyčajné HTTP volanie — `print(get_iss_location())`.
-LLM pridáva:
+## Nástroje
 
-- **porozumenie prirodzenej reči** (pochopí "Kde lieta?", "Where is ISS?", preklepy),
-- **samostatné rozhodnutie**, ktorý nástroj zavolať a kedy,
-- **formulovanie odpovede** po slovensky, prirodzene, v kontexte dialógu.
-
-A tool zas dáva LLM to, čo sám nevie — **aktuálne real-time dáta**, ktoré nie sú
-v tréningových dátach. Bez toolu by si polohu ISS vymyslel.
-
-## Nástroje (tools)
-
-| Nástroj | Popis | Zdroj dát |
+| Nástroj | Popis | Zdroj |
 |---|---|---|
-| `get_iss_location()` | Aktuálna poloha ISS (lat/lon, výška, rýchlosť, mapa) | `api.wheretheiss.at` |
-| `get_people_in_space()` | Zoznam ľudí vo vesmíre (meno, krajina, agentúra, pozícia, loď, dni vo vesmíre) | `corquaid.github.io` |
+| `get_iss_location()` | Poloha ISS (lat/lon, výška, rýchlosť) | `api.wheretheiss.at` |
+| `get_people_in_space()` | Posádka (meno, krajina, agentúra, loď, dni v kozme) | `corquaid.github.io` |
 
-Obe API sú verejné a nevyžadujú kľúč.
+Obe API sú verejné a bez kľúča.
 
 ## Inštalácia
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate           # Windows (CMD / PowerShell)
-# source .venv/Scripts/activate   # Git Bash na Windows
-# source .venv/bin/activate        # macOS / Linux
+.venv\Scripts\activate          # Windows
+# source .venv/bin/activate      # macOS / Linux
 pip install -r requirements.txt
 ```
 
 ## Konfigurácia
 
-1. Skopíruj `.env.example` do `.env`.
-2. Doplň svoj OpenAI API kľúč (získaš ho na <https://platform.openai.com/api-keys>):
+Skopíruj `.env.example` do `.env` a doplň svoj OpenAI API kľúč
+(<https://platform.openai.com/api-keys>):
 
 ```env
 OPENAI_API_KEY=sk-...
@@ -55,47 +41,33 @@ OPENAI_API_KEY=sk-...
 python main.py
 ```
 
-Pre ukončenie napíš `koniec` (alebo `exit`, `quit`, `q`) alebo stlač `Ctrl+C`.
+Ukončenie: `koniec` (alebo `exit`, `quit`, `q`) či `Ctrl+C`.
 
 ## Príklad komunikácie
 
 ```
-Ahoj! Mám aktuálne informácie o polohe a posádke Medzinárodnej vesmírnej stanice. Pýtaj sa, čo ťa zaujíma.
+Ahoj! Mám aktuálne informácie o polohe Medzinárodnej vesmírnej stanice a o všetkých astronautoch, ktorí sú práve vo vesmíre. Pýtaj sa, čo ťa zaujíma.
 (Pre ukončenie napíš 'koniec' alebo stlač Ctrl+C.)
 
-Ty: Koľko ľudí je teraz na ISS?
+Otázka: Koľko ľudí je aktuálne vo vesmíre?
 
-Na Medzinárodnej vesmírnej stanici (ISS) sa momentálne nachádza 10 ľudí. Patria sem astronauti z rôznych krajín vrátane Číny, Ruska, USA a Francúzska.
+Aktuálne je vo vesmíre 10 astronautov z rôznych krajín, ktorí sa nachádzajú na troch rôznych vesmírnych lodiach. Medzi nimi sú aj štyria astronauti z Číny na lodi Shenzhou 22, traja z USA na lodi Crew-12 Dragon a dvaja z Ruska na lodi Soyuz MS-28, pričom misia Expedície 74 prebieha v plnom prúde. Napríklad, Jessica Meir z NASA je vo vesmíre už 204 dní, zatiaľ čo Wu Fei z Číny je na svojej prvej misii.
 
-Ty: Je tam nejaký slovák alebo čech?
+Otázka: Je tam nejaký slovák?
 
-Na Medzinárodnej vesmírnej stanici nie sú momentálne žiadni Slováci ani Česi. Všetci astronauti, ktorí sú tam teraz, pochádzajú z Číny, Ruska, USA a Francúzska.
+Momentálne nie je žiadny Slovák medzi astronautami, ktorí sú vo vesmíre. Napriek tomu Slovensko má ambície v oblasti vesmírneho výskumu a technológie, a slovenskí vedci a inžinieri sa aktívne zapájajú do medzinárodných vesmírnych projektov a iniciatív. Veríme, že v budúcnosti sa aj slovenskí astronauti dostanú na medzinárodnú scénu.
 
-Ty: A kde sa aktuálne ISS nachádza?
-
-Medzinárodná vesmírna stanica sa aktuálne nachádza na súradniciach 27,0° južnej šírky a 42,0° východnej dĺžky, vo výške približne 430 km nad zemským povrchom a pohybuje sa rýchlosťou okolo 27 549 km/h. Môžeš sa na ňu pozrieť aj na tomto odkaze [mapa](https://www.google.com/maps?q=-27.037734359685,42.04388607141).
-
-Ty: Nad akou krajinou to presne je?
-
-Aktuálne sa Medzinárodná vesmírna stanica nachádza nad Indickým oceánom, približne južne od afrického kontinentu.
-
-Ty: koniec
+Otázka: koniec
 Maj sa!
 ```
 
-Všimni si, že pri poslednej otázke *"Nad akou krajinou to presne je?"* model
-**nezavolal žiadny tool znova** — odvodil odpoveď z predošlých súradníc, ktoré
-si pamätá z histórie konverzácie.
+Pri druhej otázke model **nevolal tool znova** — dáta o posádke má v histórii
+konverzácie z prvej odpovede.
 
-## Ako to vnútorne funguje (tool-use cyklus)
+## Ako funguje tool-use cyklus
 
-1. Skript pošle otázku modelu spolu s definíciou dostupných nástrojov.
-2. Model sa rozhodne — buď odpovie priamo, alebo vráti `tool_calls` so zoznamom
-   nástrojov, ktoré chce zavolať.
-3. Skript tieto funkcie skutočne vykoná a výsledok pridá do konverzácie ako
-   správu s rolou `tool`.
-4. Model dostane výsledky a sformuluje finálnu odpoveď pre užívateľa.
-5. Ak model potrebuje ďalšie volanie, cyklus sa opakuje. Inak odpoveď ide
-   rovno do terminálu.
-
-Použitý model: **`gpt-4o-mini`** (rýchly a lacný, ideálny pre tento typ úlohy).
+1. Skript pošle otázku + definíciu nástrojov modelu.
+2. Model buď odpovie priamo, alebo vráti `tool_calls`.
+3. Skript zavolá funkciu a výsledok pošle späť ako správu `role: "tool"`.
+4. Model sformuluje finálnu odpoveď. Ak potrebuje ďalší tool, cyklus sa opakuje.
+5. Celá história (vrátane predošlých otázok a odpovedí) sa posiela pri každom volaní, takže konverzácia má pamäť.
